@@ -6,6 +6,6 @@ const pacienteSchema = new mongoose.Schema({
     cpf:{type:Number, required:true}
 }, {versionKey: false});
 
-const paciente = mongoose.model("pacientes", pacienteSchema);
+const pacientes = mongoose.model("pacientes", pacienteSchema);
 
-export {paciente, pacienteSchema};
+export  {pacientes, pacienteSchema};
