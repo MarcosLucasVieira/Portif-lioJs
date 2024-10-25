@@ -1,4 +1,5 @@
 import medicos from "../models/Medicos.js";
+import { pacientes } from "../models/Pacientes.js";
 
 class MedicoController{
 
@@ -6,7 +7,6 @@ class MedicoController{
               const listaMedicos = await medicos.find({});
               res.status(200).json(listaMedicos);
        }
-
 
        static async listarMedicoPorId(req,res){
               try{
@@ -19,15 +19,17 @@ class MedicoController{
        }
        
        static async cadastrarMedicos(req,res){
+              const novoMedico = req.body;
               try{
-                     const novoMedico = await medicos.create(req.body);
-                     res.status(201).json({ message: "criado com sucesso", medicos:
-                       novoMedico })
+                     const pacienteEncontrado = await pacientes.findById(novoMedico.pacientes);
+                     let pacienteId = pacienteEncontrado._id;
+                     const medicoPaciente ={ ... novoMedico, paciente: pacienteId};
+                     const consultaCriada = await medicos.create(medicoPaciente);
+                     res.status(201).json({ message: "criado com sucesso", medicos:consultaCriada })
               }catch(erro){
                       res.status(500).json({message: `${erro.message}- FALHA AO CADASTRAR MEDICO`})
               }   
        }
-
        
        static async atualizarMedico(req,res){
               try{

@@ -5,9 +5,7 @@ import pacientes from "./pacientesRoutes.js"
 
 const routes = (app) => {
     app.route("/").get((req, res) => res.status(200).send("Curso de Node.js"));
-    app.use(express.json(), enfermeiros);
-    app.use(express.json(), medicos);
-    app.use(express.json(), pacientes)
+    app.use(express.json(), medicos, pacientes, enfermeiros);
 };
 
 export default routes;

@@ -11,7 +11,7 @@ class PacientesController{
        static async listarPacientePorId(req,res){
               try{
                      const id = req.params.id;
-                     const pacienteEncontrado = await pacientes.findById({id});
+                     const pacienteEncontrado = await pacientes.find({});
                              res.status(200).json(pacienteEncontrado);
               } catch(erro){
                      res.status(500).json({message:`${erro.message} - FALHA AO PROCURAR PACIENTE`})
