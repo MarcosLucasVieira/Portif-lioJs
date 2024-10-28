@@ -1,6 +1,8 @@
 import express, { json } from "express";
 import conectar from "./config/dbConnect.js";
 import routes from "./routes/index.js";
+import mongoose, { mongo } from "mongoose";
+import manipuladorDeErros from "./middlewares/manipuladorDeErros.js";
 
 const conexao = await conectar();
 
@@ -15,9 +17,7 @@ conexao.once("open", ()=> {
 const app = express();
 routes(app);
 
-app.use((erro, req, res, next) => {
-    res.status(500).send({message:"Erro interno do servidor"});
-})
+app.use(manipuladorDeErros);
 
 
 

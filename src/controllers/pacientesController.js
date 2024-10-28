@@ -8,7 +8,7 @@ class PacientesController{
               res.status(200).json(listaPacientes);
        }
 
-       static async listaPacientePorId(req, res) {
+       static async listaPacientePorId(req, res, next) {
               try {
                   const id = req.params.id;
                   const pacienteEncontrado = await pacientes.findById(id); // Certifique-se de passar o id diretamente
@@ -19,45 +19,39 @@ class PacientesController{
                       res.status(404).json({ message: "ID DO PACIENTE NÃO LOCALIZADO" });
                   }
               } catch (erro) {
-                  if (erro instanceof mongoose.Error.CastError) {
-                      res.status(400).send({ message: "Um ou mais dados fornecidos estão incorretos." });
-                  } else {
-                      res.status(500).send({ message: "Erro interno de servidor." });
-                  }
+                 next(erro)
               }
           }
           
        
-       static async cadastrarPacientes(req,res){
+       static async cadastrarPacientes(req,res,next){
               try{
                      const novoPaciente = await pacientes.create(req.body);
                      res.status(201).json({ message: "criado com sucesso", pacientes:
                        novoPaciente })
               }catch(erro){
-                      res.status(500).json({message: `${erro.message}- FALHA AO CADASTRAR PACIENTE`})
+                     next(erro);
               }   
        }
 
        
-       static async atualizaPaciente(req,res){
+       static async atualizaPaciente(req,res, next){
               try{
                       const id = req.params.id;
                       await pacientes.findByIdAndUpdate(id, req.body);
                             res.status(200).json({message: "Cadastro Atualizado"})
               } catch(erro){
-                     res.status(500).json({message:`${erro.message} - FALHA AO ATUALIZAR`})
-
+                     next(erro);
               }
        }
 
-       static async deletarPaciente(req, res){
+       static async deletarPaciente(req, res, next){
               try{
                      const id = req.params.id;
                      await pacientes.findByIdAndDelete(id);
                             res.status(200).json({message: " Cadastro Deletado"})
-
               }catch(erro){
-                     res.status(500).json({message:`${erro.message} - FALHA AO DELETAR`}) 
+                     next(erro);
               }
        }
 };

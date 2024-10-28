@@ -9,7 +9,7 @@ class MedicoController{
               res.status(200).json(listaMedicos);
        }
 
-       static async listarMedicoPorId(req,res){
+       static async listarMedicoPorId(req,res, next){
               try{
                      const id = req.params.id;
                      const medicoEncontrado = await medicos.findById(id);
@@ -17,20 +17,15 @@ class MedicoController{
                      if(medicoEncontrado !== null ){
                             res.status(200).send(medicoEncontrado);
                      }else{
-                             res.status(404).json({message: "ID DO MEDICO NÃO LOCALIZADO"})
+                             res.status(404).json({message: "ID DO MEDICO(A) NÃO LOCALIZADO"})
                      }
               } catch(erro){
-
-                     if (erro instanceof mongoose.Error.CastError){
-                            res.status(400).send({message:"um ou mais dados fornecidos estão incorretos."});
-                     } else{
-                            res.status(500).send({message:"Erro interno de servidor."})
-                     }
+                     next(erro);
               
               }
        }
        
-       static async cadastrarMedicos(req,res){
+       static async cadastrarMedicos(req,res,next){
               const novoMedico = req.body;
               try{
                      const pacienteEncontrado = await pacientes.findById(novoMedico.pacientes);
@@ -39,18 +34,17 @@ class MedicoController{
                      const consultaCriada = await medicos.create(medicoPaciente);
                      res.status(201).json({ message: "criado com sucesso", medicos:consultaCriada })
               }catch(erro){
-                      res.status(500).json({message: `${erro.message}- FALHA AO CADASTRAR MEDICO`})
+                     next(erro);
               }   
        }
        
-       static async atualizarMedico(req,res){
+       static async atualizarMedico(req,res,next){
               try{
                       const id = req.params.id;
                       await medicos.findByIdAndUpdate(id, req.body);
                             res.status(200).json({message: "Cadastro Atualizado"})
               } catch(erro){
-                     res.status(500).json({message:`${erro.message} - FALHA AO ATUALIZAR`})
-
+                     next(erro);
               }
        }
 
@@ -61,7 +55,7 @@ class MedicoController{
                             res.status(200).json({message: " Cadastro Deletado"})
 
               }catch(erro){
-                     res.status(500).json({message:`${erro.message} - FALHA AO DELETAR`}) 
+                     next(erro);
               }
        }
 };

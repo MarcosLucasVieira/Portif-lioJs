@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import enfermeiros from "../models/Enfermeiros.js";
 
 class EnfermeirosController{
@@ -8,13 +7,12 @@ class EnfermeirosController{
             const listaEnfermeiros = await enfermeiros.find();
                 res.status(200).json(listaEnfermeiros);
         }catch(erro){
-            res.status(500).json({message:`${erro.message} - FALHA NA REQUISIÇÃO`})
-
+            next(erro);
         }
         
     }
   
-    static async listadeEnfermeirosPorId(req, res) {
+    static async listadeEnfermeirosPorId(req, res, next) {
         try {
             const id = req.params.id;
             const enfermeiroEncontrado = await enfermeiros.findById(id); // Certifique-se de passar o id diretamente
@@ -25,43 +23,37 @@ class EnfermeirosController{
                 res.status(404).json({ message: "ID DO ENFERMEIRO(A) NÃO LOCALIZADO" });
             }
         } catch (erro) {
-            if (erro instanceof mongoose.Error.CastError) {
-                res.status(400).send({ message: "Um ou mais dados fornecidos estão incorretos." });
-            } else {
-                res.status(500).send({ message: "Erro interno de servidor." });
-            }
+           next (erro);
         }
     }
     
     
-    static async cadastrarEnfermeiros(req,res){
+    static async cadastrarEnfermeiros(req,res, next){
         try{
             const novoEnfermeiro = await enfermeiros.create(req.body);
             res.status(201).json({ message: "criado com sucesso", enfermeiros:  novoEnfermeiro })
         }catch(erro){
-            res.status(500).json({message: `${erro.message}- FALHA AO CADASTRAR ENFERMEIRO`})
+           next(erro);
         }
     }
 
-    static async atualizaEnfermeiros(req, res){
+    static async atualizaEnfermeiros(req, res, next){
         try{
             const id = req.params.id;
             await enfermeiros.findByIdAndUpdate(id, req.body);
             res.status(200).json({message: "Cadastro Atualizado"})
         }catch(erro){
-            res.status(500).json({message:`${erro.message} - FALHA NA ATUALIZAÇÃO`})
-
+           next(erro)
         }
-        
     }
-    static async deletarEnfermeiro(req, res){
+
+    static async deletarEnfermeiro(req, res, next){
         try{
                const id = req.params.id;
                await enfermeiros.findByIdAndDelete(id);
                       res.status(200).json({ message: " Cadastro Deletado"})
-
         }catch(erro){
-               res.status(500).json({message:`${erro.message} - FALHA AO DELETAR`}) 
+            next(erro);
         }
  }
     
