@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import medicos from "../models/Medicos.js";
 import { pacientes } from "../models/Pacientes.js";
 
@@ -11,10 +12,21 @@ class MedicoController{
        static async listarMedicoPorId(req,res){
               try{
                      const id = req.params.id;
-                     const medicoEncontrado = await medicos.findById({id});
-                             res.status(200).json(medicoEncontrado);
+                     const medicoEncontrado = await medicos.findById(id);
+
+                     if(medicoEncontrado !== null ){
+                            res.status(200).send(medicoEncontrado);
+                     }else{
+                             res.status(404).json({message: "ID DO MEDICO NÃO LOCALIZADO"})
+                     }
               } catch(erro){
-                     res.status(500).json({message:`${erro.message} - FALHA AO PROCURAR MEDICO`})
+
+                     if (erro instanceof mongoose.Error.CastError){
+                            res.status(400).send({message:"um ou mais dados fornecidos estão incorretos."});
+                     } else{
+                            res.status(500).send({message:"Erro interno de servidor."})
+                     }
+              
               }
        }
        

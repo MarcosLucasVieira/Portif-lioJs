@@ -15,6 +15,10 @@ conexao.once("open", ()=> {
 const app = express();
 routes(app);
 
+app.use((erro, req, res, next) => {
+    res.status(500).send({message:"Erro interno do servidor"});
+})
+
 
 
 export default app;

@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 
 const EnfermeirosSchema = new mongoose.Schema({
-    id:{type: mongoose.Schema.Types.ObjectId},
+    id:{type: mongoose.Types.ObjectId},
     nome:{type:String, required:true},
     idade:{type:Number},
-    coren:{type:Number, required: true}
+    coren:{type:String, required: true, mathc: /8/}
 }, {versionKey: false});
 
 const enfermeiros = mongoose.model("enfermeiros", EnfermeirosSchema);

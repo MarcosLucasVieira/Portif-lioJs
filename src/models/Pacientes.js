@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
 const pacienteSchema = new mongoose.Schema({
-    id: {type: mongoose.Schema.Types.ObjectId },
+    id:{type: mongoose.Types.ObjectId},
     nome:{type: String, required: true},
-    cpf:{type:Number, required:true}
+    cpf:{type:Number, required:true, match:/11/}
 }, {versionKey: false});
 
 const pacientes = mongoose.model("pacientes", pacienteSchema);
