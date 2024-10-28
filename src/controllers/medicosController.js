@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import medicos from "../models/Medicos.js";
 import { pacientes } from "../models/Pacientes.js";
+import NaoEncontrado from "../erros/naoEncontrado.js";
 
 class MedicoController{
 
@@ -17,7 +18,7 @@ class MedicoController{
                      if(medicoEncontrado !== null ){
                             res.status(200).send(medicoEncontrado);
                      }else{
-                             res.status(404).json({message: "ID DO MEDICO(A) NÃO LOCALIZADO"})
+                            next(new NaoEncontrado ("ID DO MEDICO(A) NÃO LOCALIZADO"));
                      }
               } catch(erro){
                      next(erro);
@@ -29,10 +30,18 @@ class MedicoController{
               const novoMedico = req.body;
               try{
                      const pacienteEncontrado = await pacientes.findById(novoMedico.pacientes);
+                     let pacienteNome= pacienteEncontrado.nome;
                      let pacienteId = pacienteEncontrado._id;
-                     const medicoPaciente ={ ... novoMedico, paciente: pacienteId};
+                     const medicoPaciente ={ ... novoMedico, paciente: pacienteId, pacienteNome};
                      const consultaCriada = await medicos.create(medicoPaciente);
-                     res.status(201).json({ message: "criado com sucesso", medicos:consultaCriada })
+                       res.status(201).json({
+            message: "criado com sucesso",
+            medicos: consultaCriada,
+            paciente: {
+                id: pacienteId,
+                nome: pacienteNome
+            }
+        });
               }catch(erro){
                      next(erro);
               }   
@@ -41,8 +50,14 @@ class MedicoController{
        static async atualizarMedico(req,res,next){
               try{
                       const id = req.params.id;
-                      await medicos.findByIdAndUpdate(id, req.body);
-                            res.status(200).json({message: "Cadastro Atualizado"})
+                      const medicoEncontrado = await medicos.findByIdAndUpdate(id, req.body);
+                     
+                      if(medicoEncontrado){
+                            res.status(200).json({message: "CADASTRO ATUALIZADO"})
+                      } else {
+                            next(new NaoEncontrado("ID DO MÉDICO(A) NÃO ENCONTRADO"))
+                      }                                    
+
               } catch(erro){
                      next(erro);
               }
@@ -51,8 +66,13 @@ class MedicoController{
        static async deletarMedico(req, res){
               try{
                      const id = req.params.id;
-                     await medicos.findByIdAndDelete(id);
+                     const medicoEncontrado =await medicos.findByIdAndDelete(id);
+                          
+                     if(medicoEncontrado){
                             res.status(200).json({message: " Cadastro Deletado"})
+                     } else {
+                            next(new NaoEncontrado("ID DO MÉDICO(A) NÃO ENCONTRADO"))
+                     }
 
               }catch(erro){
                      next(erro);

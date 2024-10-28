@@ -1,7 +1,6 @@
 import express, { json } from "express";
 import conectar from "./config/dbConnect.js";
 import routes from "./routes/index.js";
-import mongoose, { mongo } from "mongoose";
 import manipuladorDeErros from "./middlewares/manipuladorDeErros.js";
 
 const conexao = await conectar();
