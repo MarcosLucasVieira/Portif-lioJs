@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import { pacienteSchema } from "./Pacientes.js";
 
-const especialidades = ['ORTOPEDIA', 'PEDIATRIA', 'CARDIOLOGIA']
 
 const MedicosSchema = new mongoose.Schema({
     id:{
@@ -12,14 +11,22 @@ const MedicosSchema = new mongoose.Schema({
               
     crm:{
              type:String,
-             required:[true,"O CRM É OBRIGATÓRIO"], match: /^[0-9]{6,8}$/},
+             required:[true,"O CRM É OBRIGATÓRIO"], 
+             match:[ /^[0-9]{5,6}$/, "O crm deve ter de 5 a 6 dígitos"]},
+             
              
     especialidade: { 
             type: String,
-             enum: especialidades,
-             required: [true, "A ESPECIALIDADE DO MÉDICO(A) É OBRIGATÓRIA"]}, 
+            required: [true, "A ESPECIALIDADE DO MÉDICO(A) É OBRIGATÓRIA"], 
+             enum: {               
+                values:['ORTOPEDIA', 'PEDIATRIA', 'CARDIOLOGIA'],
+                message:"A especialidade {VALUE} não permitida"},
+    },
     idade:{
-            type:Number},
+        type: Number,
+        min: [18, "A idade minima dever ser 18 anos"], // Especificando o mínimo de forma correta
+        required: true
+    },
 
     pacientes: {pacienteSchema}
 }, {versionKey:false});
