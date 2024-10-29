@@ -23,6 +23,7 @@ const ResidenteSchema = new mongoose.Schema({
         required:[true, "O PREENCHIMENTO DA IDADE É OBRIGATÓRIO"]
     },
     genero:{
+        type:String,
         enum:{
         values:["MASCULINO", "FEMININO"] }
     }

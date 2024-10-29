@@ -1,5 +1,4 @@
-import mongoose from "mongoose";
-import medicos from "../models/Medicos.js";
+import {medicos} from "../models/index.js";
 import { pacientes } from "../models/Pacientes.js";
 import NaoEncontrado from "../erros/naoEncontrado.js";
 

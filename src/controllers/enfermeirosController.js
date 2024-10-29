@@ -1,5 +1,5 @@
 import NaoEncontrado from "../erros/naoEncontrado.js";
-import enfermeiros from "../models/Enfermeiros.js";
+import {enfermeiros} from "../models/index.js";
 
 class EnfermeirosController{
 

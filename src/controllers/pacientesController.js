@@ -1,4 +1,4 @@
-import { pacientes } from "../models/Pacientes.js"
+import { pacientes } from "../models/index.js"
 import NaoEncontrado from "../erros/naoEncontrado.js";
 
 class PacientesController{

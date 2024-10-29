@@ -1,5 +1,5 @@
 import NaoEncontrado from "../erros/naoEncontrado.js";
-import residentes from "../models/Residentes.js";
+import {residentes} from "../models/index.js";
 
 class ResidentesController {
 
@@ -14,7 +14,7 @@ class ResidentesController {
 
     static async listarResidentes(req, res, next){
         try{
-            const listaResidentes = await residentes.findById({});
+            const listaResidentes = await residentes.find({});
             res.status(200).json(listaResidentes);   
 
         }catch(erro){
@@ -36,6 +36,37 @@ class ResidentesController {
         next(erro);
     }
     };
+
+    static async atualizarResidentes(req, res, next){
+        try{
+            const id = req.params.id;
+            const residenteEncontrado = await residentes.findByIdAndUpdate(id, req.body);
+            
+            if(residenteEncontrado){
+                res.status(200).json({message: "Cadastro Atualizado"});
+            } else {
+                next(new NaoEncontrado("ID DO RESIDENTE NÃO LOCALIZADO"))
+            }
+        } catch(erro){
+            next(erro);
+        }
+    };
+
+    static async deletarResidentes(req, res, next){
+        try{
+            const id = req.params.id;
+            const redisentesEncontrado = await residentes.findByIdAndDelete(id);
+
+            if(redisentesEncontrado){
+                res.status(204).json({message:"Cadastro deletado"})
+            } else{
+                next(new NaoEncontrado("ID DO RESIDENTE NÃO LOCALIZADO"))
+            }
+        } catch(erro){
+            next(erro);
+        }
+    }
+
 
 
 
