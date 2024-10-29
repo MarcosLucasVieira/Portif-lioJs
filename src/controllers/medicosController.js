@@ -7,7 +7,7 @@ class MedicoController{
        static async listarMedicos(req,res){
               const listaMedicos = await medicos.find({});
               res.status(200).json(listaMedicos);
-       }
+       };
 
        static async listarMedicoPorId(req,res, next){
               try{
@@ -23,7 +23,7 @@ class MedicoController{
                      next(erro);
               
               }
-       }
+       };
        
        static async cadastrarMedicos(req,res,next){
               const novoMedico = req.body;
@@ -44,7 +44,7 @@ class MedicoController{
               }catch(erro){
                      next(erro);
               }   
-       }
+       };
        
        static async atualizarMedico(req,res,next){
               try{
@@ -60,7 +60,7 @@ class MedicoController{
               } catch(erro){
                      next(erro);
               }
-       }
+       };
 
        static async deletarMedico(req, res){
               try{
@@ -76,7 +76,23 @@ class MedicoController{
               }catch(erro){
                      next(erro);
               }
-       }
+       };
+
+       static listarMedicosPorNome = async (req, res, next) => {
+              try {
+                  const { nome, especialidade } = req.query;
+          
+                  const busca = {};
+                  if (nome) busca.nome = nome;
+                  if (especialidade) busca.especialidade = especialidade;
+          
+                 
+                  const medicosResultado = await medicos.find(busca);
+                  res.status(200).send(medicosResultado);
+              } catch (erro) {
+                  next(erro);
+              }
+          }
 };
 
 export default MedicoController;
