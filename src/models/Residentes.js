@@ -17,5 +17,18 @@ const ResidenteSchema = new mongoose.Schema({
         type: String,
         match:[/^[0-9]{7}$/, "A MATRICULA DO(A) RESIDENTE DEVER CONTER 7 DIGITOS"],
         required:[true, "A MATRICULA DO(A) RESIDENTE É OBRIGATÓRIA"],
+    }, 
+    idade:{
+        type:Number,
+        required:[true, "O PREENCHIMENTO DA IDADE É OBRIGATÓRIO"]
+    },
+    genero:{
+        enum:{
+        values:["MASCULINO", "FEMININO"] }
     }
-})
+
+})   
+const Residentes = mongoose.model("residentes", ResidenteSchema);
+
+
+export default Residentes;
