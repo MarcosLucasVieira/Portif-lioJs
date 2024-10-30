@@ -65,6 +65,16 @@ class ResidentesController {
         } catch(erro){
             next(erro);
         }
+    };
+
+    static async listarResidentesPorMatricula (req, res, next){
+        const matricula = req.query.matricula;
+        try{
+            const residentesPorMatricula = await residentes.find({matricula:matricula})
+            res.status(200).json(residentesPorMatricula)
+        } catch(erro){
+            next(erro);
+        }
     }
 
 

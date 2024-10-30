@@ -11,7 +11,7 @@ class EnfermeirosController{
             next(erro);
         }
         
-    }
+    };
   
     static async listadeEnfermeirosPorId(req, res, next) {
         try {
@@ -26,7 +26,7 @@ class EnfermeirosController{
         } catch (erro) {
            next (erro);
         }
-    }
+    };
     
     
     static async cadastrarEnfermeiros(req,res, next){
@@ -36,7 +36,7 @@ class EnfermeirosController{
         }catch(erro){
            next(erro);
         }
-    }
+    };
 
     static async atualizaEnfermeiros(req, res, next){
         try{
@@ -51,7 +51,7 @@ class EnfermeirosController{
         }catch(erro){
            next(erro)
         }
-    }
+    };
 
     static async deletarEnfermeiro(req, res, next){
         try{
@@ -67,7 +67,17 @@ class EnfermeirosController{
         }catch(erro){
             next(erro);
         }
- }
+    };
+
+    static async listarEnfermeirosPorCoren(req, res, next){
+        const coren = req.query.coren;
+        try{
+            const enfermeirosPorCoren = await enfermeiros.find({coren:coren});
+            res.status(200).json(enfermeirosPorCoren);
+        } catch(erro){
+            next(erro);
+        }
+    };
     
 };
 

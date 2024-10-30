@@ -6,7 +6,7 @@ class PacientesController{
        static async listarPacientes(req,res){
               const listaPacientes = await pacientes.find({});
               res.status(200).json(listaPacientes);
-       }
+       };
 
        static async listaPacientePorId(req, res, next) {
               try {
@@ -21,7 +21,7 @@ class PacientesController{
               } catch (erro) {
                  next(erro)
               }
-          }
+          };
           
        static async cadastrarPacientes(req,res,next){
               try{
@@ -31,13 +31,13 @@ class PacientesController{
               }catch(erro){
                      next(erro);
               }   
-       }
+       };
 
        
        static async atualizaPaciente(req,res, next){
               try{
                       const id = req.params.id;
-                     const pacienteEncontrado =  await pacientes.findByIdAndUpdate(id, req.body);
+                      const pacienteEncontrado =  await pacientes.findByIdAndUpdate(id, req.body);
                       
                       if(pacienteEncontrado){
                             res.status(200).json({message: "Cadastro Atualizado"});
@@ -47,7 +47,7 @@ class PacientesController{
               } catch(erro){
                      next(erro);
               }
-       }
+       };
 
        static async deletarPaciente(req, res, next){
               try {
@@ -63,7 +63,18 @@ class PacientesController{
                  } catch (erro) {
                      next(erro);
                  }
-             }
+       };
+       
+       static async listarPacientesPorCpf(req, res, next){
+              const cpf = req.query.cpf;
+              try{
+                     const pacientesPorCpf = await pacientes.find({cpf:cpf});
+                     res.status(200).json(pacientesPorCpf);
+              }catch(erro){
+                     next(erro);
+              }
+       };
+
 };
 
 export default PacientesController;

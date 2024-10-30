@@ -25,26 +25,34 @@ class MedicoController{
               }
        };
        
-       static async cadastrarMedicos(req,res,next){
+       static async cadastrarMedicos(req, res, next) {
               const novoMedico = req.body;
-              try{
-                     const pacienteEncontrado = await pacientes.findById(novoMedico.pacientes);
-                     let pacienteNome= pacienteEncontrado.nome;
-                     let pacienteId = pacienteEncontrado._id;
-                     const medicoPaciente ={ ... novoMedico, paciente: pacienteId, pacienteNome};
-                     const consultaCriada = await medicos.create(medicoPaciente);
-                       res.status(201).json({
-            message: "criado com sucesso",
-            medicos: consultaCriada,
-            paciente: {
-                id: pacienteId,
-                nome: pacienteNome
-            }
-        });
-              }catch(erro){
-                     next(erro);
-              }   
-       };
+              try {
+                  const pacienteEncontrado = await pacientes.findById(novoMedico.pacientes);
+                  
+                  if (!pacienteEncontrado) {
+                      return res.status(404).json({ message: "Paciente não encontrado!" });
+                  }
+          
+                  const pacienteNome = pacienteEncontrado.nome;
+                  const pacienteId = pacienteEncontrado._id;
+          
+                  const medicoPaciente = { ...novoMedico, paciente: pacienteId, pacienteNome };
+                  const consultaCriada = await medicos.create(medicoPaciente);
+          
+                  res.status(201).json({
+                      message: "Criado com sucesso",
+                      medicos: consultaCriada,
+                      paciente: {
+                          id: pacienteId,
+                          nome: pacienteNome
+                      }
+                  });
+              } catch (erro) {
+                  next(erro);
+              }
+          };
+          
        
        static async atualizarMedico(req,res,next){
               try{
@@ -78,21 +86,16 @@ class MedicoController{
               }
        };
 
-       static listarMedicosPorNome = async (req, res, next) => {
-              try {
-                  const { nome, especialidade } = req.query;
-          
-                  const busca = {};
-                  if (nome) busca.nome = nome;
-                  if (especialidade) busca.especialidade = especialidade;
-          
-                 
-                  const medicosResultado = await medicos.find(busca);
-                  res.status(200).send(medicosResultado);
-              } catch (erro) {
-                  next(erro);
-              }
-          }
+     static async ListarMedicosPorEspecialidade (req, res, next){
+       const especialidade = req.query.especialidade;
+       try{
+              const medicosPorEspecialidade = await medicos.find({especialidade: especialidade})
+              res.status(200).json(medicosPorEspecialidade);
+       }catch(erro){
+              next(erro);
+       }
+     }
 };
+    
 
 export default MedicoController;
