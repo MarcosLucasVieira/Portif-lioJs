@@ -86,10 +86,15 @@ class MedicoController{
               }
        };
 
-     static async ListarMedicosPorEspecialidade (req, res, next){
-       const especialidade = req.query.especialidade;
+     static async listarMedicosPorFiltro (req, res, next){
        try{
-              const medicosPorEspecialidade = await medicos.find({especialidade: especialidade})
+              const {especialidade, nome} = req.query;
+
+              const busca = {};
+              if(especialidade)busca.especialidade = {$regex:especialidade, $options:"i"};
+              if(nome)busca.nome = {$regex: nome, $options: "i"};
+
+              const medicosPorEspecialidade = await medicos.find(busca);
               res.status(200).json(medicosPorEspecialidade);
        }catch(erro){
               next(erro);

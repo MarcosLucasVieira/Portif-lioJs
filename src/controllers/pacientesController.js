@@ -65,10 +65,15 @@ class PacientesController{
                  }
        };
        
-       static async listarPacientesPorCpf(req, res, next){
-              const cpf = req.query.cpf;
+       static async listarPacientesPorFiltro(req, res, next){
               try{
-                     const pacientesPorCpf = await pacientes.find({cpf:cpf});
+                     const {cpf, nome} = req.query;
+
+                     const busca ={};
+                     if(cpf)busca.cpf ={$regex:cpf, $options:"i"};
+                     if(nome)busca.nome ={$regex:nome, $options:"i"};
+
+                     const pacientesPorCpf = await pacientes.find(busca);
                      res.status(200).json(pacientesPorCpf);
               }catch(erro){
                      next(erro);

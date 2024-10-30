@@ -67,10 +67,15 @@ class ResidentesController {
         }
     };
 
-    static async listarResidentesPorMatricula (req, res, next){
-        const matricula = req.query.matricula;
+    static async listarResidentesPorFiltro(req, res, next){
         try{
-            const residentesPorMatricula = await residentes.find({matricula:matricula})
+            const {matricula, nome} = req.query;
+            const busca = {};
+
+            if(matricula)busca.matricula = {$regex:matricula, $options: "i"};
+            if(nome)busca.nome = {$regex: nome, $options:"i"};
+
+            const residentesPorMatricula = await residentes.find(busca)
             res.status(200).json(residentesPorMatricula)
         } catch(erro){
             next(erro);
