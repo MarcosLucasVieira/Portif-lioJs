@@ -1,13 +1,29 @@
 import {medicos} from "../models/index.js";
-import { pacientes } from "../models/Pacientes.js";
+import {  pacientes } from "../models/Pacientes.js";
 import NaoEncontrado from "../erros/naoEncontrado.js";
+import RequisicaoIncorreta from "../erros/RequisicaoIncorreta.js";
 
 class MedicoController{
 
-       static async listarMedicos(req,res){
-              const listaMedicos = await medicos.find({});
-              res.status(200).json(listaMedicos);
-       };
+       static async listarMedicos(req,res, next){
+              try{
+              let{ limite = 5, pagina = 1} = req.query;
+
+              limite = parseInt(limite);
+              pagina = parseInt(pagina);
+
+              if(limite > 0 && pagina > 0){
+                     const listaMedicos = await medicos.find()
+                     .skip((pagina - 1)*limite)
+                     .limit(limite)          
+
+                     res.status(200).json(listaMedicos);
+              }else{
+                 next(new RequisicaoIncorreta);
+              }
+       } catch(erro){
+           next(erro);
+       }};
 
        static async listarMedicoPorId(req,res, next){
               try{
@@ -37,7 +53,7 @@ class MedicoController{
                   const pacienteNome = pacienteEncontrado.nome;
                   const pacienteId = pacienteEncontrado._id;
           
-                  const medicoPaciente = { ...novoMedico, paciente: pacienteId, pacienteNome };
+                  const medicoPaciente = { ...novoMedico, pacientes: pacienteId, pacientes: pacienteNome };
                   const consultaCriada = await medicos.create(medicoPaciente);
           
                   res.status(201).json({
@@ -88,19 +104,30 @@ class MedicoController{
 
      static async listarMedicosPorFiltro (req, res, next){
        try{
-              const {especialidade, nome} = req.query;
-
-              const busca = {};
-              if(especialidade)busca.especialidade = {$regex:especialidade, $options:"i"};
-              if(nome)busca.nome = {$regex: nome, $options: "i"};
+              const busca = await processaBusca(req.query);
 
               const medicosPorEspecialidade = await medicos.find(busca);
               res.status(200).json(medicosPorEspecialidade);
        }catch(erro){
               next(erro);
        }
-     }
+     };
+
+      
+
+   
 };
+
+async function processaBusca(parametros) {
+       const {especialidade, nome, nomePaciente} = parametros;
+
+       const busca = {};
+       if(especialidade)busca.especialidade = {$regex:especialidade, $options:"i"};
+       if(nome)busca.nome = {$regex: nome, $options: "i"};
+       
+       
+       return busca;
+     }
     
 
 export default MedicoController;

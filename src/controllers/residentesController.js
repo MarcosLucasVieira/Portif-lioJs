@@ -1,26 +1,37 @@
 import NaoEncontrado from "../erros/naoEncontrado.js";
+import RequisicaoIncorreta from "../erros/RequisicaoIncorreta.js";
 import {residentes} from "../models/index.js";
 
 class ResidentesController {
 
+    static async listarResidentes(req, res, next){
+        try{
+            let {limite = 5, pagina =1} = req.query;
+
+            limite = parseInt(limite);
+            pagina = parseInt(pagina);
+
+            if(limite > 0 && pagina >0){
+                const listaResidentes = await residentes.find()
+                .skip((pagina-1)*limite)
+                .limit(limite)
+                
+                res.status(200).json(listaResidentes); 
+            }else{next (new RequisicaoIncorreta)}   
+        }catch(erro){
+            next(erro);
+        }
+    };
+
     static async cadastrarResidente(req, res, next){
         try{
             const novoResidente = await residentes.create(req.body);
-            res.status(201).json({message:"Cadastro de residente criado com sucesso", redisentes: novoResidente });
+            res.status(201).json({message:"Cadastro de residente criado com sucesso", residentes: novoResidente });
         }catch(erro){
             next(erro);
         }
-    }
+    };
 
-    static async listarResidentes(req, res, next){
-        try{
-            const listaResidentes = await residentes.find({});
-            res.status(200).json(listaResidentes);   
-
-        }catch(erro){
-            next(erro);
-        }
-    }
 
     static async listarResidentesPorId(req, res, next){
         try {
@@ -80,7 +91,7 @@ class ResidentesController {
         } catch(erro){
             next(erro);
         }
-    }
+    };
 
 
 

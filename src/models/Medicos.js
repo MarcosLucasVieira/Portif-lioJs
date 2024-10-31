@@ -34,4 +34,4 @@ const MedicosSchema = new mongoose.Schema({
 const medicos = mongoose.model("medicos", MedicosSchema);
 
 
-export default medicos;
+export  {medicos, MedicosSchema};

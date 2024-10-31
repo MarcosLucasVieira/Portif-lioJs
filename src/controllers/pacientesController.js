@@ -1,11 +1,28 @@
 import { pacientes } from "../models/index.js"
 import NaoEncontrado from "../erros/naoEncontrado.js";
+import RequisicaoIncorreta from "../erros/RequisicaoIncorreta.js";
 
 class PacientesController{
 
-       static async listarPacientes(req,res){
-              const listaPacientes = await pacientes.find({});
-              res.status(200).json(listaPacientes);
+       static async listarPacientes(req,res, next){
+              try{
+                     let{limite=5, pagina=1} = req.query;
+
+                     limite = parseInt(limite);
+                     pagina = parseInt(pagina);
+
+                     if(limite > 0 && pagina> 0){
+                            
+                            const listaPacientes = await pacientes.find()
+                            .skip((pagina -1)* limite)
+                            .limit(limite)
+
+                            res.status(200).json(listaPacientes);
+                     }else{
+                            next(new RequisicaoIncorreta);
+                     }}catch(erro){
+                            next(erro);
+                     }
        };
 
        static async listaPacientePorId(req, res, next) {
