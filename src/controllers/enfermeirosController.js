@@ -71,13 +71,10 @@ class EnfermeirosController{
 
     static async listarEnfermeirosPorFiltro(req, res, next){
         try{
-            const {coren, nome} = req.query.coren;
-            const busca = {};
-            
-            if(coren)busca.coren ={$regex:coren}
-            if(nome)busca.nome ={$regex:nome, $options:"id"}
+            const busca = await processaBusca(req.query);
 
-            const enfermeirosPorFiltro = await enfermeiros.find(busca);
+            const enfermeirosPorFiltro = await enfermeiros
+            .find(busca);
             res.status(200).json(enfermeirosPorFiltro);
         } catch(erro){
             next(erro);
@@ -85,5 +82,15 @@ class EnfermeirosController{
     };
     
 };
+
+async function processaBusca(paramentros){
+    const {nome, coren} = paramentros;
+
+    const busca = {};
+    if(nome)busca.nome ={$regex:nome, $options:"i"};
+    if(coren)busca.coren={$regex:coren};
+    
+    return busca;
+}
 
 export default EnfermeirosController;

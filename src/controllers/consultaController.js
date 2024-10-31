@@ -71,8 +71,10 @@ class consultaController {
 
     static async listaConsultasPorFiltro(req, res, next) {
         try {
-            const busca = await procesaBusca(req.query);
+            const {nomeMedico, nomePaciente} = req.query;
 
+            const busca = await procesaBusca(req.query);
+    
             if( busca !== null){
                  const consultaResultado = await consultas
                 .find(busca)
@@ -99,6 +101,7 @@ async function procesaBusca(parametros) {
 
         if (medico !== null) { // Verifica se o médico foi encontrado
             busca.medico = medico._id;
+        
         } else{
             busca = null;
         }

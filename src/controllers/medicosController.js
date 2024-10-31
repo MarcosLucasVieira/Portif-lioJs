@@ -98,19 +98,18 @@ class MedicoController{
               const medicosResultado = await medicos
               .find(busca)
               .populate("pacientes"); 
+
+              
               res.status(200).send(medicosResultado);
        }catch(erro){
               next(erro);
        }
-     };
-
-      
-
-   
+     };    
 };
 
 async function processaBusca(parametros) {
-       const {especialidade, nome, nomePaciente} = parametros;
+       const {especialidade, nome} = parametros;
+ 
 
        const busca = {};
        if(especialidade)busca.especialidade = {$regex:especialidade, $options:"i"};

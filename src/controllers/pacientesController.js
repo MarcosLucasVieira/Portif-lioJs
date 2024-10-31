@@ -74,12 +74,8 @@ class PacientesController{
        
        static async listarPacientesPorFiltro(req, res, next){
               try{
-                     const {cpf, nome} = req.query;
-
-                     const busca ={};
-                     if(cpf)busca.cpf ={$regex:cpf, $options:"i"};
-                     if(nome)busca.nome ={$regex:nome, $options:"i"};
-
+                    
+                     const busca = await processaBusca(req.query);
                      const pacientesPorCpf = await pacientes.find(busca);
                      res.status(200).json(pacientesPorCpf);
               }catch(erro){
@@ -88,5 +84,15 @@ class PacientesController{
        };
 
 };
+
+async function processaBusca(parametros) {
+       const {cpf, nome} = parametros;
+
+       const busca = {};
+       if(cpf)busca.cpf ={$regex:cpf};
+       if(nome)busca.nome ={$regex:nome, $options:"i"};
+       return busca;
+}
+
 
 export default PacientesController;

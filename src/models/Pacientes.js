@@ -7,7 +7,7 @@ const pacienteSchema = new mongoose.Schema({
             type: String,
             required: [true, "O NOME DO(A) PACIENTE É OBRIGATÓRIO"]},
     cpf:{
-            type:Number,
+            type:String,
             required:[true, "O CPF DO(A) PACIENTE É OBRIGATÓRIO"],
             match:/11/}
 }, {versionKey: false});
