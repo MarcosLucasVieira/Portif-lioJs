@@ -1,30 +1,17 @@
 import NaoEncontrado from "../erros/naoEncontrado.js";
-import RequisicaoIncorreta from "../erros/RequisicaoIncorreta.js";
 import {enfermeiros} from "../models/index.js";
 
 class EnfermeirosController{
 
     static async listarEnfermeiros(req, res,next){
         try{
-            let{limite = 5, pagina =1} = req.query;
+            const buscaEnfermeiros = enfermeiros.find();
 
-            limite = parseInt(limite);
-            pagina = parseInte(pagina);
-
-            if(limite > 0 && pagina >0){
-                const listaEnfermeiros = await enfermeiros.find()
-                .skip((pagina -1)* limite)
-                .limit(limite)
-                
-                res.status(200).json(listaEnfermeiros);
-            }else {
-                next(new RequisicaoIncorreta)
-            }
-        }catch(erro){
-            next(erro);
-        }
-        
-    };
+            req.resultado = buscaEnfermeiros;
+            next();
+        } catch(erro){
+        next(erro);
+    }};
   
     static async listadeEnfermeirosPorId(req, res, next) {
         try {

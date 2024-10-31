@@ -6,21 +6,11 @@ class PacientesController{
 
        static async listarPacientes(req,res, next){
               try{
-                     let{limite=5, pagina=1} = req.query;
+                     const buscaPacientes = pacientes.find();
 
-                     limite = parseInt(limite);
-                     pagina = parseInt(pagina);
-
-                     if(limite > 0 && pagina> 0){
-                            
-                            const listaPacientes = await pacientes.find()
-                            .skip((pagina -1)* limite)
-                            .limit(limite)
-
-                            res.status(200).json(listaPacientes);
-                     }else{
-                            next(new RequisicaoIncorreta);
-                     }}catch(erro){
+                     req.resultado = buscaPacientes;
+                     next();
+                     }catch(erro){
                             next(erro);
                      }
        };

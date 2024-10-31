@@ -6,18 +6,10 @@ class ResidentesController {
 
     static async listarResidentes(req, res, next){
         try{
-            let {limite = 5, pagina =1} = req.query;
-
-            limite = parseInt(limite);
-            pagina = parseInt(pagina);
-
-            if(limite > 0 && pagina >0){
-                const listaResidentes = await residentes.find()
-                .skip((pagina-1)*limite)
-                .limit(limite)
+                const buscaresidentes = residentes.find();
                 
-                res.status(200).json(listaResidentes); 
-            }else{next (new RequisicaoIncorreta)}   
+                req.resultado = buscaresidentes;
+                next();
         }catch(erro){
             next(erro);
         }

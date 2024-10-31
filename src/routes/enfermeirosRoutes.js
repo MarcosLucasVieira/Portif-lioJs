@@ -1,9 +1,10 @@
 import express from "express";
 import EnfermeirosController from "../controllers/enfermeirosController.js";
+import paginar from "../middlewares/paginar.js";
 
 const routes = express.Router();
 
-routes.get("/enfermeiros", EnfermeirosController.listarEnfermeiros);
+routes.get("/enfermeiros", EnfermeirosController.listarEnfermeiros,paginar);
 routes.get("/enfermeiros/busca",EnfermeirosController.listarEnfermeirosPorFiltro);
 routes.get("/enfermeiros/:id", EnfermeirosController.listadeEnfermeirosPorId);
 routes.post("/enfermeiros", EnfermeirosController.cadastrarEnfermeiros);

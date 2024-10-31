@@ -1,26 +1,15 @@
 import {medicos} from "../models/index.js";
 import {  pacientes } from "../models/Pacientes.js";
 import NaoEncontrado from "../erros/naoEncontrado.js";
-import RequisicaoIncorreta from "../erros/RequisicaoIncorreta.js";
 
 class MedicoController{
 
        static async listarMedicos(req,res, next){
               try{
-              let{ limite = 5, pagina = 1} = req.query;
+                     const buscaMedicos = medicos.find();
 
-              limite = parseInt(limite);
-              pagina = parseInt(pagina);
-
-              if(limite > 0 && pagina > 0){
-                     const listaMedicos = await medicos.find()
-                     .skip((pagina - 1)*limite)
-                     .limit(limite)          
-
-                     res.status(200).json(listaMedicos);
-              }else{
-                 next(new RequisicaoIncorreta);
-              }
+                     req.resultado = buscaMedicos;
+                     next();
        } catch(erro){
            next(erro);
        }};
@@ -106,8 +95,10 @@ class MedicoController{
        try{
               const busca = await processaBusca(req.query);
 
-              const medicosPorEspecialidade = await medicos.find(busca);
-              res.status(200).json(medicosPorEspecialidade);
+              const medicosResultado = await medicos
+              .find(busca)
+              .populate("pacientes"); 
+              res.status(200).send(medicosResultado);
        }catch(erro){
               next(erro);
        }
@@ -127,7 +118,7 @@ async function processaBusca(parametros) {
        
        
        return busca;
-     }
+};
     
 
 export default MedicoController;

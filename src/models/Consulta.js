@@ -1,25 +1,29 @@
 import mongoose from "mongoose";
-import { pacienteSchema } from "./Pacientes.js";
-import {MedicosSchema} from "./Medicos.js";
 
 const ConsultaSchema = new mongoose.Schema({
-    id:{type: mongoose.Types.ObjectId},
-    dataConsulta:{
+    id: { type: mongoose.Types.ObjectId },
+
+    medico: {
+        type: mongoose.Types.ObjectId,
+        ref: "medicos",
+        required: [true, "O(a) medico é obrigatório"]
+    },
+    paciente: {
+        type: mongoose.Types.ObjectId,
+        ref: "pacientes",
+        required: [true, "O(a) paciente é obrigatório"]
+    },
+    dataConsulta: {
         type: Date,
-        require: [true, "A data da consulta é obrigatória"],
-        validate:{
-            validator: function(value){
+        required: [true, "A data da consulta é obrigatória"],
+        validate: {
+            validator: function (value) {
                 return value > new Date();
             },
-            message:"A data deve ser futura"
+            message: "A data deve ser futura"
         },
-    },
-    pacientes:{pacienteSchema},
-    medicos:{MedicosSchema},
-
-}, {versionKey: false}, {timestamps: true});
-
-
+    }
+}, { versionKey: false, timestamps: true });
 
 const consultas = mongoose.model("consultas", ConsultaSchema);
 
